@@ -34,6 +34,25 @@
 
 简介应覆盖本轮对象；遗漏不能被当作 Agent 已经补齐。Agent 不回写或覆盖 CI、冲突和 GitHub review 状态。
 
+## 工作树创建与合并
+
+两个事件都只在用户于当前卡片明确提交后发出。卡片不执行 Git。完整请求在来源 `state.model.operation`，事件只带 `repoPath`、`requestId` 和 `instruction`，避免把工作树列表重复放进 8KiB 载荷。
+
+- `hana-corder.create-worktree`：`operation.action` 为 `create`，含 `type`、`name`（可为空字符串）和 `baseBranch: "main"`。基于本地 main，按仓库既有目录规范创建；名称为空时从当前聊天生成，真实语义未知才询问。
+- `hana-corder.merge-worktrees`：`operation.action` 为 `merge`，完整 `targets` 为 `{id,branch,head}[]`。只处理选定的本地工作树和分支；执行前重新检查、验证、合并和清理。不丢弃修改，不 force，不删除主树或执行所在树，不推送，不删除远端。冲突或检查失败时停止受影响对象并报告。
+
+两者都用同一响应，且只接受 `requestId` 匹配当前 operation 的回包：
+
+```json
+{"kind":"worktree-operation","requestId":"本轮ID","phase":"done","message":"实际结果"}
+```
+
+```json
+{"kind":"worktree-operation","requestId":"本轮ID","phase":"error","error":"具体原因"}
+```
+
+完成或失败都释放 operation。完成提示只说明请求结果，并要求刷新后查看仓库事实；卡片不根据回包伪造 rows。无匹配或迟到回包忽略。卡片快照不是最新事实。停止等待只结束卡片侧等待，不撤销已经发出的任务。
+
 ## PR 审阅
 
 事件：`hana-corder.review-pr`，参数 `{reviewId,prId,headSha,note,instruction}`。其他事实从精确卡片读取。

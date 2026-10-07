@@ -7,6 +7,12 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 
 function load(name, options = {}) {
   let html = fs.readFileSync(path.join(root, 'assets', name + '.card.html'), 'utf8');
+  if (name === 'worktrees') {
+    const style = fs.readFileSync(path.join(root, 'assets/hana-card-style.js'), 'utf8');
+    const runtime = fs.readFileSync(path.join(root, 'assets/worktrees-runtime.js'), 'utf8');
+    html = html.replace('<script src="assets/hana-card-style.js"></script>', () => '<script>' + style + '</script>');
+    html = html.replace('<script src="assets/worktrees-runtime.js"></script>', () => '<script>' + runtime + '</script>');
+  }
   if (options.scan) html = html.replace(/(<script[^>]*data-card-manifest>)([\s\S]*?)(<\/script>)/, (_, a, json, b) => {
     const value = JSON.parse(json); value.toolBindings = { scan: { tool: 'time.now' } };
     return a + JSON.stringify(value) + b;

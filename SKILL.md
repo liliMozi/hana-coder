@@ -105,13 +105,15 @@ python3 "$RECIPE_DIR/scripts/prepare.py" prs --repo "$REPO" --remote OWNER/REPO 
 | 事件 | Agent 操作 | 完成回写 |
 |---|---|---|
 | `hana-corder.enrich-worktrees` | 根据新工作树快照补简介 | `kind: worktree-enrich`，匹配 refreshId |
+| `hana-corder.create-worktree` | 按用户明确提交的 operation，在本地 main 上创建工作树 | `kind: worktree-operation`，匹配 requestId |
+| `hana-corder.merge-worktrees` | 按用户明确提交的 operation.targets 做本地检查、合并和清理 | `kind: worktree-operation`，匹配 requestId |
 | `hana-corder.enrich-prs` | 根据 PR 描述/文件信息补简介和关注点 | `kind: pr-enrich`，匹配 refreshId |
 | `hana-corder.review-pr` | 按指定 PR/head SHA 与批注完成审阅 | `kind: pr-review`，匹配 reviewId、prId、reviewedHeadSha |
 | `issue-swarm-gate` | 处理分组确认和调整；再按授权派工 | 保留旧事件名兼容，具体看 issues.md |
 | `issue-swarm-notes` | 处理逐组批注、问题或明确的后续要求 | 不把批注自动视为远端写入授权 |
 | 命令面板添加/执行事件 | 按 commands.md 的声明执行或添加 | 匹配请求及命令 ID |
 
-精确 JSON 见 `references/events.md`。更新用 `update_card_data(cardEntityId=事件来源, data=结果)`，不是改另一张卡的 HTML。回写成功后检查来源状态确认接受；工具调用成功不等于按钮已复位。无法回写则正文说明，不伪称已完成。
+创建和合并只处理本次明确请求的本地工作树，不推送、不删除远端，不把卡片快照当作最新事实。精确 JSON 见 `references/events.md`。更新用 `update_card_data(cardEntityId=事件来源, data=结果)`，不是改另一张卡的 HTML。回写成功后检查来源状态确认接受；工具调用成功不等于按钮已复位。无法回写则正文说明，不伪称已完成。
 
 ## 6. 视觉不可随整理而改动
 

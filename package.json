@@ -5,7 +5,7 @@
   "description": "Development checks for the Hana Coder recipe",
   "scripts": {
     "test:python": "python3 -m unittest discover -s tests -p \"test_*.py\" -v",
-    "test:cards": "node tests/test_cards.cjs && node tests/test_pr_runtime.cjs && node tests/test_commands_runtime.cjs",
+    "test:cards": "node tests/test_cards.cjs && node tests/test_worktree_actions.cjs && node tests/test_pr_runtime.cjs && node tests/test_commands_runtime.cjs",
     "test": "npm run test:python && npm run test:cards"
   },
   "devDependencies": {
