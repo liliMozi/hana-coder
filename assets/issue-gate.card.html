@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:; connect-src 'none'">
+<title>Issue 分组方案确认 · 示例数据</title>
+<script type="application/json" data-card-manifest>
+{
+  "spec": "1.0",
+  "display": { "styleProfile": "custom", "preferredWidthPx": 680 },
+  "packageAssets": ["assets/hana-card-style.css", "assets/issue-hero.jpg"],
+  "stateSchema": {
+    "type": "object",
+    "properties": {
+      "uiLanguage": { "type": "string" },
+      "hero": { "type": "boolean" },
+      "title": { "type": "string" },
+      "repo": { "type": "string" },
+      "rangeLabel": { "type": "string" },
+      "groups": { "type": "array" },
+      "notes": { "type": "object" },
+      "submittedAt": { "type": ["string", "null"] },
+      "page": { "type": "number" }
+    }
+  }
+}
+</script>
+<script type="application/json" data-card-state>
+{
+  "uiLanguage": "zh",
+  "hero": true,
+  "title": "分组方案确认",
+  "repo": "example/fieldnotes",
+  "rangeLabel": "最近 7 天",
+  "groups": [
+    {
+      "label": "Worker A",
+      "modules": "主题与样式",
+      "issues": [
+        {
+          "number": 312,
+          "title": "暗色模式下列表分隔线几乎看不见",
+          "url": "https://github.com/example/fieldnotes/issues/312",
+          "problem": "暗色主题中，分隔线的对比度不足。列表条目难以区分。",
+          "acceptance": "暗色主题中分隔线清晰。亮色主题无变化。样式测试通过。",
+          "body": "暗色主题下，列表分隔线几乎看不见。\n\n环境：macOS 26，v1.4.2。亮色主题正常。\n\n期望：暗色下分隔线清晰。",
+          "detail": "思路：先核对暗色主题的对比度变量，再检查卡片容器描边。\n\n预计改动：主题变量文件与卡片容器样式，2 个文件以内。\n\n风险：亮色主题回归，用样式快照测试兑底。"
+        }
+      ],
+      "mergeReason": ""
+    },
+    {
+      "label": "Worker B",
+      "modules": "搜索索引与召回",
+      "issues": [
+        {
+          "number": 328,
+          "title": "条目上千后搜索明显变慢",
+          "url": "https://github.com/example/fieldnotes/issues/328",
+          "problem": "条目超过 1000 条时，搜索延迟明显增加。",
+          "acceptance": "1000 条数据下，搜索延迟在正常范围。搜索模块测试通过。",
+          "body": "库内条目超过一千后，搜索从瞬发变成明显等待。\n\n数据量：约 1200 条。等待超过 1 秒。",
+          "detail": "思路：在相似度计算前加预过滤，排除归档条目。\n\n预计改动：索引构建与召回路径，可能同时修复 #330。\n\n风险：召回排序变化，用搜索模块测试兑底。"
+        },
+        {
+          "number": 330,
+          "title": "搜索结果出现重复条目",
+          "url": "https://github.com/example/fieldnotes/issues/330",
+          "problem": "同一条目在搜索结果中出现多次。",
+          "acceptance": "同一条目只出现一次。已归档条目不被重复召回。"
+        }
+      ],
+      "mergeReason": "两个 issue 是同一根因的两个症状。修复落在同一批代码，合并为一组。"
+    },
+    {
+      "label": "Worker C",
+      "modules": "导出管线",
+      "issues": [
+        {
+          "number": 335,
+          "title": "导出 Markdown 时表格偶尔错位",
+          "url": "https://github.com/example/fieldnotes/issues/335",
+          "problem": "含合并单元格的表格，导出后列错位。",
+          "acceptance": "样例文档导出后表格对齐。导出现有测试不回归。"
+        }
+      ],
+      "mergeReason": ""
+    },
+    {
+      "label": "待澄清",
+      "status": "clarify",
+      "modules": "",
+      "issues": [
+        {
+          "number": 341,
+          "title": "偶尔感觉同步有点慢",
+          "url": "https://github.com/example/fieldnotes/issues/341",
+          "problem": "用户报告偶发变慢，无复现路径。",
+          "acceptance": "",
+          "missing": "缺少：复现步骤、发生时段、网络环境。建议：请报告者补充日志时间窗，再决定是否立项。"
+        }
+      ],
+      "mergeReason": ""
+    }
+  ],
+  "notes": {},
+  "submittedAt": null,
+  "page": 0
+}
+</script>
+<link rel="stylesheet" href="assets/hana-card-style.css">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--hs-bg); color: var(--hs-ink); font-family: var(--hs-sans); }
+  main.hs-page { aspect-ratio: 4 / 3; min-height: 400px; position: relative; }
+  html.gt-fill, html.gt-fill body { height: 100%; }
+  html.gt-fill main.hs-page { aspect-ratio: auto; height: 100%; min-height: 0; }
+  .hs-shell { height: 100%; display: flex; flex-direction: column; }
+  .gt-head { padding-bottom: var(--hs-space-8); flex: none; }
+  .gt-top { flex: none; }
+  .gt-with-hero .gt-top { position: relative; isolation: isolate; z-index: 2; }
+  .gt-with-hero .gt-top::before { content: ""; position: absolute; left: calc(6px - var(--hs-space-22)); right: calc(6px - var(--hs-space-22)); top: calc(6px - var(--hs-space-48)); bottom: -8px; background: url('assets/issue-hero.jpg') center 55% / cover; border-radius: calc(8px * var(--hana-corner-radius-scale, 1)); corner-shape: squircle; z-index: -1; pointer-events: none; }
+  .gt-with-hero #gtTitle { color: #F7F5EE; }
+  .gt-with-hero .gt-sub { color: #D9DFDF; }
+  .gt-with-hero .gt-pages { z-index: 1; }
+  .gt-with-hero .gt-page { padding-top: 14px; box-sizing: border-box; }
+  .gt-sub { font-family: var(--hs-sans); font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--hs-muted); margin-left: var(--hs-space-7); }
+  .gt-stats { display: flex; flex-wrap: wrap; gap: var(--hs-space-6); padding: 0 0 var(--hs-space-8); flex: none; }
+  .gt-pages { position: relative; margin-bottom: var(--hs-space-7); flex: 1; min-height: 0; width: calc(100% + var(--hs-space-22) + var(--hs-space-22) - 20px); margin-left: calc(10px - var(--hs-space-22)); }
+  .gt-page { position: absolute; top: 0; left: 0; right: 0; height: 100%; visibility: hidden; overflow-y: auto; }
+  .gt-page.on { visibility: visible; }
+
+  /* overview page */
+  .gt-ov { display: grid; gap: var(--hs-space-6); }
+  .gt-ov-row {
+    display: flex; align-items: baseline; gap: var(--hs-space-8); width: 100%;
+    text-align: left; padding: var(--hs-space-7) var(--hs-space-10);
+    border: 1px solid var(--hs-line); border-radius: var(--hs-radius); background: var(--hs-soft);
+    cursor: pointer;
+  }
+  .gt-ov-row:hover { border-color: var(--hs-accent); }
+  .gt-ov-row--clarify { border-style: dashed; background: transparent; }
+  .gt-ov-label { flex: none; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--hs-accent); min-width: 5.5em; }
+  .gt-ov-issues { font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12.5px; color: var(--hs-ink); }
+  .gt-ov-modules { margin-left: auto; font-size: 12px; color: var(--hs-muted); text-align: right; }
+
+  /* group detail page */
+  .gt-group {
+    border: 1px solid var(--hs-line);
+    border-radius: var(--hs-radius);
+    padding: var(--hs-space-8) var(--hs-space-10);
+    background: var(--hs-soft);
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  .gt-group--clarify { border-style: dashed; border-color: #C49A3C; background: color-mix(in srgb, #E8BF55 7%, var(--hs-bg)); }
+  .gt-ov-row--clarify { border-color: #C49A3C; background: color-mix(in srgb, #E8BF55 7%, var(--hs-bg)); }
+  .gt-group--clarify .gt-worker, .gt-ov-row--clarify .gt-ov-label { color: #9B7625; }
+  .gt-badge--clarify { background: color-mix(in srgb, #E8BF55 22%, var(--hs-bg)); color: #8A6519; }
+  .hs-page .gt-dot--clarify { background: #C49A3C; color: #C49A3C; }
+  .gt-body { flex: 1; min-height: 0; overflow-y: auto; }
+  .gt-ghead { display: flex; align-items: center; justify-content: space-between; gap: var(--hs-space-7); flex-wrap: wrap; }
+  .gt-worker { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--hs-accent); }
+  .gt-modules { font-size: 12px; color: var(--hs-muted); }
+  .gt-issue { padding: var(--hs-space-7) 0 0; }
+  .gt-issue + .gt-issue { border-top: 1px dashed var(--hs-line); margin-top: var(--hs-space-7); }
+  .gt-ititle { font-size: 14px; line-height: 1.55; margin: 0; }
+  .gt-ititle a { color: var(--hs-accent); text-decoration: none; font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12.5px; margin-right: 6px; }
+  .gt-ititle a:hover { text-decoration: underline; }
+  .gt-row { display: flex; gap: var(--hs-space-7); font-size: 13px; line-height: 1.65; margin-top: 4px; }
+  .gt-tag { flex: none; font-size: 11px; font-weight: 700; color: var(--hs-muted); padding-top: 2px; width: 2.6em; }
+  .gt-row p { margin: 0; flex: 1; min-width: 0; overflow-wrap: break-word; }
+  .gt-row--problem p { color: var(--hs-sub); }
+  .gt-row--accept p { color: var(--hs-ink); }
+  .gt-row--missing p { color: var(--hs-sub); }
+  .gt-merge { font-size: 12px; color: var(--hs-muted); line-height: 1.6; margin-top: var(--hs-space-7); padding: var(--hs-space-6) var(--hs-space-8); background: var(--hs-tint); border-radius: var(--hs-radius); }
+  .gt-note { margin-top: var(--hs-space-7); flex: none; }
+  .gt-note .hs-textarea { font-size: 12.5px; min-height: 30px; }
+
+  .gt-foot { position: relative; display: flex; align-items: center; justify-content: space-between; gap: var(--hs-space-8); padding-top: var(--hs-space-4); flex: none; }
+  .gt-hint { font-size: 12px; color: var(--hs-muted); line-height: 1.6; }
+  .gt-pager { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: var(--hs-space-6); }
+  .gt-dots { display: flex; align-items: center; gap: var(--hs-space-6); }
+  .gt-arrow { padding: 2px 7px; line-height: 1; }
+  .gt-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: var(--hs-muted); color: var(--hs-muted); opacity: .45; }
+  .gt-dot--map { width: 11px; height: 11px; background: transparent; color: var(--hs-muted); opacity: .65; border-radius: 0; display: inline-flex; align-items: center; justify-content: center; }
+  .gt-dot--map svg { width: 11px; height: 11px; overflow: visible; transform: translateY(-.3px); }
+  .gt-dot--map.on { background: transparent; color: var(--hs-ink); opacity: 1; box-shadow: none !important; }
+  .gt-home-shape { fill: currentColor; stroke: currentColor; stroke-width: .5; stroke-linejoin: round; }
+  .gt-home-ring, .gt-home-gap { fill: none; stroke-linejoin: round; display: none; }
+  .gt-dot--map.on .gt-home-ring { display: block; stroke: currentColor; stroke-width: 13; }
+  .gt-dot--map.on .gt-home-gap { display: block; stroke: var(--hs-bg); stroke-width: 6.5; }
+  .gt-dot--fix { background: var(--hs-accent); color: var(--hs-accent); }
+  .gt-dot.on { opacity: 1; box-shadow: 0 0 0 1.5px var(--hs-bg), 0 0 0 3px currentColor; }
+  .hs-page .gt-dot { corner-shape: round; }
+  .gt-status { font-size: 12px; color: var(--hs-muted); line-height: 1.5; padding-top: var(--hs-space-6); flex: none; min-height: 18px; }
+  .gt-copybox { width: 100%; box-sizing: border-box; font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12px; line-height: 1.6; min-height: 120px; }
+  .gt-num { background: none; border: none; padding: 0; cursor: pointer; color: var(--hs-accent); font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12.5px; margin-right: 6px; }
+  .gt-num:hover { text-decoration: underline; }
+  .gt-detail { position: absolute; inset: 0; z-index: 10; background: var(--hs-bg); display: flex; flex-direction: column; padding: var(--hs-space-22); }
+  .gt-detail-head { display: flex; align-items: center; gap: var(--hs-space-7); flex: none; padding-bottom: var(--hs-space-8); }
+  .gt-detail-ctx { font-size: 12px; color: var(--hs-muted); font-family: var(--hs-mono, ui-monospace, monospace); }
+  .gt-detail-ext { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; line-height: 1; padding: 4px 9px; border-radius: 999px; background: var(--hs-tint); color: var(--hs-accent); text-decoration: none; }
+  .gt-detail-ext:hover { background: color-mix(in srgb, var(--hs-accent) 16%, var(--hs-bg)); }
+  .gt-detail-body { flex: 1; min-height: 0; overflow-y: auto; }
+  .gt-detail-title { font-family: var(--hs-serif); font-size: 19px; line-height: 1.45; font-weight: 600; margin: 0 0 var(--hs-space-4); }
+  .gt-sec { margin-top: var(--hs-space-8); }
+  .gt-sec-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--hs-muted); margin-bottom: var(--hs-space-6); }
+  .gt-sec p { font-size: 13.5px; line-height: 1.75; color: var(--hs-ink); margin: 0 0 var(--hs-space-6); overflow-wrap: break-word; }
+  .gt-brand { flex: none; text-align: center; font-size: 11px; letter-spacing: .06em; color: var(--hs-muted); padding-top: var(--hs-space-6); }
+  .gt-hidden { display: none !important; }
+  .gt-empty { font-size: 13px; color: var(--hs-muted); padding: var(--hs-space-8) 0; }
+</style>
+</head>
+<body>
+<main class="hs-page">
+  <div class="hs-shell">
+
+    <div class="gt-top">
+      <header class="gt-head">
+        <h1 class="hs-title" id="gtTitle" style="font-size:22px;"></h1>
+      </header>
+      <div class="gt-stats" id="gtStats"></div>
+    </div>
+    <div class="gt-pages" id="gtPages"></div>
+
+    <footer class="gt-foot" id="gtFoot">
+      <span class="gt-hint" id="gtHint"></span>
+      <span class="gt-pager" id="gtPager">
+        <button type="button" class="hs-button hs-button--quiet gt-arrow" id="gtPrev">‹</button>
+        <span class="gt-dots" id="gtDots"></span>
+        <button type="button" class="hs-button hs-button--quiet gt-arrow" id="gtNext">›</button>
+      </span>
+      <button type="button" class="hs-button hs-button--primary" id="gtSubmitBtn"></button>
+    </footer>
+    <div class="gt-status" id="gtStatus"></div>
+    <div class="gt-brand" id="gtBrand"></div>
+
+    <div id="gtCopyZone" class="gt-hidden" style="display:grid; gap: var(--hs-space-7); padding-top: var(--hs-space-8);">
+      <p class="gt-status" id="gtCopyHint" style="padding-top:0;"></p>
+      <textarea class="hs-textarea gt-copybox" id="gtCopyText" readonly></textarea>
+      <div><button type="button" class="hs-button" id="gtCopyBtn"></button></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var STR = {
+    zh: {
+      eyebrow: "HANA CODER · 分组方案确认",
+      stats: function (i, g) { return i + " 个 issue · " + g + " 组"; },
+      statClarify: function (n) { return "? " + n + " 待澄清"; },
+      tagProblem: "问题",
+      tagAccept: "验收",
+      tagBody: "原文",
+      tagDetail: "修复思路",
+      tagMissing: "缺口",
+      mapLabel: "总览",
+      clarifyWorker: "待澄清",
+      notePh: "批注这组…",
+      back: "‹ 返回",
+      hint: "留空即确认 · 批注即调整",
+      submit: "确认并开工",
+      resubmit: "更新提交",
+      submitted: function (time) { return "已提交 · " + time; },
+      copyHint: "这张卡片当前不在 Hana 宿主里，无法直接叫醒 Agent。把下面的决定复制回对话即可：",
+      copy: "复制决定",
+      copied: "已复制 ✓",
+      allOk: "（全部确认，无批注）",
+      empty: "这一批没有可分组的 issue。"
+    },
+    en: {
+      eyebrow: "HANA CODER · GROUPING REVIEW",
+      stats: function (i, g) { return i + " issues · " + g + " groups"; },
+      statClarify: function (n) { return "? " + n + " needs info"; },
+      tagProblem: "Issue",
+      tagAccept: "Done when",
+      tagBody: "Original report",
+      tagDetail: "Approach",
+      tagMissing: "Gap",
+      mapLabel: "Overview",
+      clarifyWorker: "Needs info",
+      notePh: "Note this group…",
+      back: "‹ Back",
+      hint: "Empty = approve all · notes = adjust",
+      submit: "Approve & start",
+      resubmit: "Update decision",
+      submitted: function (time) { return "Submitted · " + time; },
+      copyHint: "This card is outside the Hana host and cannot wake the Agent. Copy the decision back into the chat:",
+      copy: "Copy decision",
+      copied: "Copied ✓",
+      allOk: "(all approved, no notes)",
+      empty: "Nothing to group in this batch."
+    }
+  };
+
+  /* ---------- state snapshot ---------- */
+  function readEmbedded() {
+    var el = document.querySelector("script[data-card-state]");
+    try { return JSON.parse(el.textContent); } catch (e) { return {}; }
+  }
+  var snap = readEmbedded();
+  var lang = (snap.uiLanguage === "en") ? "en" : "zh";
+  var T = STR[lang];
+  var groups = Array.isArray(snap.groups) ? snap.groups : [];
+  var notes = (snap.notes && typeof snap.notes === "object") ? snap.notes : {};
+  var submittedAt = snap.submittedAt || null;
+  var page = (typeof snap.page === "number" && snap.page >= 0) ? snap.page : 0;
+
+  /* ---------- host bridge ---------- */
+  var caps = { emit: false, state: false, track: false };
+  function boot() {
+    if (!window.card || typeof window.card.capabilities !== "function") { render(); return; }
+    window.card.capabilities().then(function (env) {
+      var c = (env && env.ok && env.result && env.result.capabilities) || {};
+      caps.emit = c.emit === "available";
+      caps.state = c.state === "available" || c.state === "local_fallback";
+      var tr = c.track;
+      caps.track = !!(tr && (tr.status === "available" || tr.status === "local_fallback"));
+      if (!caps.state) { render(); return; }
+      Promise.all([
+        window.card.state.get("notes"),
+        window.card.state.get("submittedAt"),
+        window.card.state.get("page")
+      ]).then(function (rs) {
+        if (rs[0] && rs[0].ok && rs[0].result && rs[0].result.value && typeof rs[0].result.value === "object") {
+          notes = rs[0].result.value;
+        }
+        if (rs[1] && rs[1].ok && rs[1].result && rs[1].result.value) { submittedAt = rs[1].result.value; }
+        if (rs[2] && rs[2].ok && rs[2].result && typeof rs[2].result.value === "number") { page = rs[2].result.value; }
+        render();
+      });
+    });
+  }
+  var lastSaveError = "";
+  async function persist() {
+    if (!caps.state) return true;
+    var rs = await Promise.all([
+      window.card.state.set("notes", notes),
+      window.card.state.set("submittedAt", submittedAt),
+      window.card.state.set("page", page)
+    ]);
+    var failed = rs.find(function (r) { return !r || !r.ok; });
+    lastSaveError = failed ? ((failed && failed.error) || "状态保存失败，刷新前请保留批注。") : "";
+    if (lastSaveError) document.getElementById("gtStatus").textContent = lastSaveError;
+    return !failed;
+  }
+
+  /* ---------- helpers ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function groupKey(g, i) { return (g.label || "Worker") + "#" + i; }
+  function fmtTime(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleString(lang === "zh" ? "zh-CN" : "en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return ""; }
+  }
+  function isClarifyGroup(g) { return g.status === "clarify"; }
+
+  /* ---------- paging ---------- */
+  var pageEls = [];
+  var dotEls = [];
+  function showPage(i) {
+    if (!pageEls.length) return;
+    page = Math.max(0, Math.min(i, pageEls.length - 1));
+    pageEls.forEach(function (p, k) { p.classList.toggle("on", k === page); });
+    dotEls.forEach(function (d, k) { d.classList.toggle("on", k === page); });
+    persist();
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    document.querySelector("main.hs-page").classList.toggle("gt-with-hero", snap.hero === true);
+    var titleEl = document.getElementById("gtTitle");
+    titleEl.textContent = snap.title || T.eyebrow;
+    document.getElementById("gtBrand").textContent = T.eyebrow;
+    var subParts = [];
+    if (snap.repo) subParts.push(snap.repo);
+    if (snap.rangeLabel) subParts.push(snap.rangeLabel);
+    if (subParts.length) titleEl.appendChild(el("span", "gt-sub", subParts.join(" · ")));
+
+    var issueCount = 0, clarify = 0;
+    groups.forEach(function (g) {
+      issueCount += Array.isArray(g.issues) ? g.issues.length : 0;
+      if (isClarifyGroup(g)) clarify++;
+    });
+    var stats = document.getElementById("gtStats");
+    stats.innerHTML = "";
+    stats.appendChild(el("span", "hs-badge hs-badge--pending", T.stats(issueCount, groups.length)));
+    if (clarify) stats.appendChild(el("span", "hs-badge gt-badge--clarify", T.statClarify(clarify)));
+
+    var wrap = document.getElementById("gtPages");
+    wrap.innerHTML = "";
+    pageEls = [];
+    if (!groups.length) wrap.appendChild(el("p", "gt-empty", T.empty));
+
+    /* page 0 · overview map */
+    var ov = el("div", "gt-page");
+    var ovList = el("div", "gt-ov");
+    groups.forEach(function (g, gi) {
+      var row = el("button", "gt-ov-row" + (isClarifyGroup(g) ? " gt-ov-row--clarify" : ""));
+      row.type = "button";
+      row.appendChild(el("span", "gt-ov-label", g.label || (isClarifyGroup(g) ? T.clarifyWorker : "Worker")));
+      var nums = (Array.isArray(g.issues) ? g.issues : []).map(function (it) { return "#" + it.number; }).join("  ");
+      row.appendChild(el("span", "gt-ov-issues", nums));
+      if (g.modules) row.appendChild(el("span", "gt-ov-modules", g.modules));
+      row.addEventListener("click", function () { showPage(gi + 1); });
+      ovList.appendChild(row);
+    });
+    ov.appendChild(ovList);
+    wrap.appendChild(ov);
+    pageEls.push(ov);
+
+    /* pages 1..N · group detail */
+    groups.forEach(function (g, gi) {
+      var isClarify = isClarifyGroup(g);
+      var pg = el("div", "gt-page");
+      var card = el("section", "gt-group" + (isClarify ? " gt-group--clarify" : ""));
+
+      var head = el("div", "gt-ghead");
+      head.appendChild(el("span", "gt-worker", g.label || (isClarify ? T.clarifyWorker : "Worker")));
+      if (g.modules) head.appendChild(el("span", "gt-modules", g.modules));
+      card.appendChild(head);
+
+      var body = el("div", "gt-body");
+      (Array.isArray(g.issues) ? g.issues : []).forEach(function (it) {
+        var block = el("div", "gt-issue");
+        var t = el("p", "gt-ititle");
+        var num = el("button", "gt-num", "#" + it.number);
+        num.type = "button";
+        num.addEventListener("click", function () { openDetail(g, it); });
+        t.appendChild(num);
+        t.appendChild(document.createTextNode(it.title || ""));
+        block.appendChild(t);
+
+        if (it.problem) {
+          var rp = el("div", "gt-row gt-row--problem");
+          rp.appendChild(el("span", "gt-tag", T.tagProblem));
+          rp.appendChild(el("p", null, it.problem));
+          block.appendChild(rp);
+        }
+        if (isClarify && it.missing) {
+          var rm = el("div", "gt-row gt-row--missing");
+          rm.appendChild(el("span", "gt-tag", T.tagMissing));
+          rm.appendChild(el("p", null, it.missing));
+          block.appendChild(rm);
+        } else if (it.acceptance) {
+          var ra = el("div", "gt-row gt-row--accept");
+          ra.appendChild(el("span", "gt-tag", T.tagAccept));
+          ra.appendChild(el("p", null, it.acceptance));
+          block.appendChild(ra);
+        }
+        body.appendChild(block);
+      });
+
+      if (g.mergeReason) body.appendChild(el("div", "gt-merge", g.mergeReason));
+      card.appendChild(body);
+
+      /* per-group annotation */
+      var noteWrap = el("div", "gt-note");
+      var ta = el("textarea", "hs-textarea");
+      ta.rows = 1;
+      ta.placeholder = T.notePh;
+      ta.value = notes[groupKey(g, gi)] || "";
+      ta.dataset.gkey = groupKey(g, gi);
+      ta.addEventListener("change", function () {
+        var v = ta.value.trim();
+        if (v) notes[ta.dataset.gkey] = v;
+        else delete notes[ta.dataset.gkey];
+        persist();
+      });
+      noteWrap.appendChild(ta);
+      card.appendChild(noteWrap);
+
+      pg.appendChild(card);
+      wrap.appendChild(pg);
+      pageEls.push(pg);
+    });
+
+    /* dots: map + groups */
+    var dots = document.getElementById("gtDots");
+    dots.innerHTML = "";
+    dotEls = [];
+    var mapDot = el("button", "gt-dot gt-dot--map");
+    mapDot.type = "button";
+    mapDot.title = T.mapLabel;
+    mapDot.setAttribute("aria-label", T.mapLabel);
+    var homeIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    homeIcon.setAttribute("viewBox", "0 0 24 24");
+    homeIcon.setAttribute("aria-hidden", "true");
+    var homePath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    homePath.setAttribute("d", "M4 9.5 9 4Q12 .8 15 4L20 9.5Q22 11.5 22 14V17Q22 22 17 22H7Q2 22 2 17V14Q2 11.5 4 9.5Z");
+    var homeRing = homePath.cloneNode();
+    homeRing.setAttribute("class", "gt-home-ring");
+    var homeGap = homePath.cloneNode();
+    homeGap.setAttribute("class", "gt-home-gap");
+    homePath.setAttribute("class", "gt-home-shape");
+    homeIcon.appendChild(homeRing);
+    homeIcon.appendChild(homeGap);
+    homeIcon.appendChild(homePath);
+    mapDot.appendChild(homeIcon);
+    mapDot.addEventListener("click", function () { showPage(0); });
+    dots.appendChild(mapDot);
+    dotEls.push(mapDot);
+    groups.forEach(function (g, gi) {
+      var d = el("button", "gt-dot" + (isClarifyGroup(g) ? " gt-dot--clarify" : " gt-dot--fix"));
+      d.type = "button";
+      d.title = g.label || ("Worker " + gi);
+      d.addEventListener("click", function () { showPage(gi + 1); });
+      dots.appendChild(d);
+      dotEls.push(d);
+    });
+    var multi = pageEls.length > 1;
+    document.getElementById("gtPrev").style.visibility = multi ? "visible" : "hidden";
+    document.getElementById("gtNext").style.visibility = multi ? "visible" : "hidden";
+    dots.style.visibility = multi ? "visible" : "hidden";
+
+    showPage(page);
+
+    document.getElementById("gtHint").textContent = T.hint;
+    document.getElementById("gtSubmitBtn").textContent = submittedAt ? T.resubmit : T.submit;
+    document.getElementById("gtStatus").textContent = lastSaveError || (submittedAt ? T.submitted(fmtTime(submittedAt)) : "");
+  }
+
+  /* ---------- detail overlay ---------- */
+  var detailEl = null;
+  function detailRow(tag, text) {
+    var r = el("div", "gt-row");
+    r.appendChild(el("span", "gt-tag", tag));
+    r.appendChild(el("p", null, text));
+    return r;
+  }
+  function openDetail(g, it) {
+    closeDetail();
+    var d = el("div", "gt-detail");
+    var head = el("div", "gt-detail-head");
+    var back = el("button", "hs-button hs-button--quiet", T.back);
+    back.type = "button";
+    back.addEventListener("click", closeDetail);
+    head.appendChild(back);
+    head.appendChild(el("span", "gt-detail-ctx", (g.label || "") + " · #" + it.number));
+    if (it.url && /^https?:\/\//i.test(it.url)) {
+      var ext = el("a", "gt-detail-ext", "GitHub ↗");
+      ext.href = it.url;
+      ext.target = "_blank";
+      ext.rel = "noopener";
+      head.appendChild(ext);
+    }
+    d.appendChild(head);
+    var body = el("div", "gt-detail-body");
+    body.appendChild(el("h2", "gt-detail-title", it.title || ""));
+    if (it.body) secParas(body, it.body, T.tagBody);
+    else if (it.problem) body.appendChild(detailRow(T.tagProblem, it.problem));
+    if (g.status === "clarify" && it.missing) {
+      body.appendChild(detailRow(T.tagMissing, it.missing));
+    } else if (it.detail) {
+      secParas(body, it.detail, T.tagDetail);
+    } else if (it.acceptance) {
+      body.appendChild(detailRow(T.tagAccept, it.acceptance));
+    }
+    d.appendChild(body);
+    document.querySelector("main.hs-page").appendChild(d);
+    detailEl = d;
+  }
+  function secParas(container, text, label) {
+    var sec = el("div", "gt-sec");
+    sec.appendChild(el("div", "gt-sec-label", label));
+    String(text).split(/\n\s*\n/).forEach(function (p) {
+      var t = p.trim();
+      if (t) sec.appendChild(el("p", null, t));
+    });
+    container.appendChild(sec);
+  }
+  function closeDetail() {
+    if (detailEl && detailEl.parentNode) detailEl.parentNode.removeChild(detailEl);
+    detailEl = null;
+  }
+
+  document.getElementById("gtPrev").addEventListener("click", function () { showPage(page - 1); });
+  document.getElementById("gtNext").addEventListener("click", function () { showPage(page + 1); });
+  document.addEventListener("keydown", function (e) {
+    if (detailEl) { if (e.key === "Escape") closeDetail(); return; }
+    var t = e.target;
+    if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) return;
+    if (e.key === "ArrowLeft") showPage(page - 1);
+    else if (e.key === "ArrowRight") showPage(page + 1);
+  });
+
+  /* ---------- submit ---------- */
+  function payload() {
+    var out = {
+      title: snap.title || "",
+      repo: snap.repo || "",
+      rangeLabel: snap.rangeLabel || "",
+      submittedAt: submittedAt,
+      allConfirmed: true,
+      notes: []
+    };
+    groups.forEach(function (g, gi) {
+      var v = notes[groupKey(g, gi)];
+      if (v) {
+        out.allConfirmed = false;
+        out.notes.push({ group: g.label || ("Worker " + gi), note: v });
+      }
+    });
+    return out;
+  }
+  function plainText() {
+    var p = payload();
+    var lines = ["[" + (p.title || T.eyebrow) + "]"];
+    if (p.allConfirmed) lines.push(T.allOk);
+    p.notes.forEach(function (n) { lines.push("· " + n.group + " → " + n.note); });
+    return lines.join("\n");
+  }
+  var submitting = false;
+  async function submit() {
+    if (submitting) return;
+    if (!caps.emit) { showCopy(); return; }
+    var out = payload();
+    var nextTime = new Date().toISOString();
+    out.submittedAt = nextTime;
+    out.instruction = "读取本事件来源卡片的分组、范围、验收及逐组批注。无批注表示确认当前方案，有批注先调整；重大范围变化重新确认。核实主代理关键设计与自足任务书后，才在明确授权范围内派工。待澄清组不派工。此动作不授权push、开PR、merge、关闭Issue或删除工作树。示例卡不得执行真实任务。遵守hana-coder的issues规程。";
+    if (new TextEncoder().encode(JSON.stringify(out)).length > 8192) {
+      document.getElementById("gtStatus").textContent = "批注过长，请缩短后提交；内容已保留。";
+      return;
+    }
+    submitting = true;
+    document.getElementById("gtSubmitBtn").disabled = true;
+    try {
+      var env = await window.card.emit("issue-swarm-gate", out);
+      if (!env || !env.ok) {
+        document.getElementById("gtStatus").textContent = (env && env.error) || "提交失败，批注已保留，可重试。";
+        return;
+      }
+      submittedAt = nextTime;
+      await persist();
+      render();
+      if (caps.track) await window.card.track("issue-swarm-gate", { groups: groups.length, noted: out.notes.length });
+    } finally {
+      submitting = false;
+      document.getElementById("gtSubmitBtn").disabled = false;
+    }
+  }
+  function showCopy() {
+    document.getElementById("gtFoot").classList.add("gt-hidden");
+    document.getElementById("gtCopyHint").textContent = T.copyHint;
+    document.getElementById("gtCopyText").value = plainText();
+    document.getElementById("gtCopyBtn").textContent = T.copy;
+    document.getElementById("gtCopyZone").classList.remove("gt-hidden");
+  }
+  document.getElementById("gtSubmitBtn").addEventListener("click", submit);
+  document.getElementById("gtCopyBtn").addEventListener("click", function () {
+    var ta = document.getElementById("gtCopyText");
+    var done = function () { document.getElementById("gtCopyBtn").textContent = T.copied; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); });
+    } else { ta.select(); }
+  });
+
+  /* ---------- frame fit: 4:3 in chat, fill when popped out ---------- */
+  function fitFrame() {
+    var w = document.documentElement.clientWidth || 0;
+    var h = window.innerHeight || 0;
+    var want = Math.max(400, Math.round(w * 0.75));
+    var fill = h > want + 40;
+    document.documentElement.classList.toggle("gt-fill", fill);
+  }
+  window.addEventListener("resize", fitFrame);
+
+  boot();
+  fitFrame();
+})();
+</script>
+</body>
+</html>

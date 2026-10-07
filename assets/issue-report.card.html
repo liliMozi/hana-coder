@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:; connect-src 'none'">
+<title>Issue 修复流水线汇报 · 示例数据</title>
+<script type="application/json" data-card-manifest>
+{
+  "spec": "1.0",
+  "display": { "styleProfile": "custom", "preferredWidthPx": 680 },
+  "packageAssets": ["assets/hana-card-style.css", "assets/issue-hero.jpg"],
+  "stateSchema": {
+    "type": "object",
+    "properties": {
+      "uiLanguage": { "type": "string" },
+      "hero": { "type": "boolean" },
+      "title": { "type": "string" },
+      "repo": { "type": "string" },
+      "rangeLabel": { "type": "string" },
+      "groups": { "type": "array" },
+      "notes": { "type": "object" },
+      "notesSubmittedAt": { "type": ["string", "null"] },
+      "page": { "type": "number" }
+    }
+  }
+}
+</script>
+<script type="application/json" data-card-state>
+{
+  "uiLanguage": "zh",
+  "hero": true,
+  "title": "修复流水线汇报",
+  "repo": "example/fieldnotes",
+  "rangeLabel": "最近 7 天",
+  "groups": [
+    {
+      "label": "Worker A",
+      "branch": "fix/issue-312",
+      "status": "approved",
+      "rounds": 0,
+      "issues": [
+        {
+          "number": 312,
+          "title": "暗色模式下列表分隔线几乎看不见",
+          "url": "https://github.com/example/fieldnotes/issues/312",
+          "problem": "暗色主题中，分隔线的对比度不足。列表条目难以区分。",
+          "solution": "根因：暗色主题沿用亮色主题的透明度值。处理：调整暗色主题的分隔线变量，增加样式回归测试。",
+          "body": "暗色主题下，列表分隔线几乎看不见。\n\n环境：macOS 26，v1.4.2。亮色主题正常。\n\n期望：暗色下分隔线清晰。",
+          "detail": "根因：暗色主题的分隔线变量沿用亮色主题的透明度值，在深色背景上对比度不足。\n\n处理：1. 暗色主题的分隔线变量提升透明度。2. 卡片容器补 1px 实色描边兑底。3. 新增暗色主题样式回归测试。\n\n验证：样式快照测试通过。亮色主题无变化。"
+        }
+      ],
+      "mergeReason": "",
+      "filesChanged": 2,
+      "tests": "passed",
+      "testsNote": "样式快照测试通过",
+      "failReason": ""
+    },
+    {
+      "label": "Worker B",
+      "branch": "fix/issue-328-330",
+      "status": "rounds",
+      "rounds": 2,
+      "issues": [
+        {
+          "number": 328,
+          "title": "条目上千后搜索明显变慢",
+          "url": "https://github.com/example/fieldnotes/issues/328",
+          "problem": "条目超过 1000 条时，搜索延迟明显增加。",
+          "solution": "根因：相似度计算执行全表扫描。处理：为索引增加预过滤步骤，跳过归档条目。",
+          "body": "库内条目超过一千后，搜索从瞬发变成明显等待。\n\n数据量：约 1200 条。等待超过 1 秒。",
+          "detail": "根因：相似度计算执行全表扫描，延迟随条目数线性放大。\n\n处理：1. 索引增加预过滤步骤。2. 归档条目不进入相似度计算。\n\n验证：1000 条基准数据下延迟回到正常范围。搜索模块 42 个测试通过。"
+        },
+        {
+          "number": 330,
+          "title": "搜索结果出现重复条目",
+          "url": "https://github.com/example/fieldnotes/issues/330",
+          "problem": "同一条目在搜索结果中出现多次。",
+          "solution": "根因与 #328 相同。处理：索引迁移时去重，归档副本不再进入结果。"
+        }
+      ],
+      "mergeReason": "同一根因。修复落在同一批代码，合并为一组避免互相踩踏。",
+      "filesChanged": 5,
+      "tests": "passed",
+      "testsNote": "搜索模块 42 个测试通过",
+      "failReason": ""
+    },
+    {
+      "label": "Worker C",
+      "branch": "fix/issue-335",
+      "status": "failed",
+      "rounds": 0,
+      "issues": [
+        {
+          "number": 335,
+          "title": "导出 Markdown 时表格偶尔错位",
+          "url": "https://github.com/example/fieldnotes/issues/335",
+          "problem": "含合并单元格的表格，导出后列错位。",
+          "solution": ""
+        }
+      ],
+      "mergeReason": "",
+      "filesChanged": 0,
+      "tests": "none",
+      "testsNote": "",
+      "failReason": "两轮修复未根治。卡点：列宽计算对嵌套表格的假设不成立，涉及导出管线底层。建议单独立项。"
+    },
+    {
+      "label": "待澄清",
+      "branch": "",
+      "status": "clarify",
+      "rounds": 0,
+      "issues": [
+        {
+          "number": 341,
+          "title": "偶尔感觉同步有点慢",
+          "url": "https://github.com/example/fieldnotes/issues/341",
+          "problem": "用户报告偶发变慢，无复现路径。",
+          "solution": "",
+          "missing": "缺少：复现步骤、发生时段、网络环境。建议：请报告者补充日志时间窗，再决定是否立项。"
+        }
+      ],
+      "mergeReason": "",
+      "filesChanged": 0,
+      "tests": "none",
+      "testsNote": "",
+      "failReason": ""
+    }
+  ],
+  "notes": {},
+  "notesSubmittedAt": null,
+  "page": 0
+}
+</script>
+<link rel="stylesheet" href="assets/hana-card-style.css">
+<style>
+  html, body { margin: 0; padding: 0; background: var(--hs-bg); color: var(--hs-ink); font-family: var(--hs-sans); }
+  main.hs-page { aspect-ratio: 4 / 3; min-height: 400px; position: relative; }
+  html.sw-fill, html.sw-fill body { height: 100%; }
+  html.sw-fill main.hs-page { aspect-ratio: auto; height: 100%; min-height: 0; }
+  .hs-shell { height: 100%; display: flex; flex-direction: column; }
+  .sw-head { padding-bottom: var(--hs-space-8); flex: none; }
+  .sw-top { flex: none; }
+  .sw-with-hero .sw-top { position: relative; isolation: isolate; z-index: 2; }
+  .sw-with-hero .sw-top::before { content: ""; position: absolute; left: calc(6px - var(--hs-space-22)); right: calc(6px - var(--hs-space-22)); top: calc(6px - var(--hs-space-48)); bottom: -8px; background: url('assets/issue-hero.jpg') center 55% / cover; border-radius: calc(8px * var(--hana-corner-radius-scale, 1)); corner-shape: squircle; z-index: -1; pointer-events: none; }
+  .sw-with-hero #swTitle { color: #F7F5EE; }
+  .sw-with-hero .sw-sub { color: #D9DFDF; }
+  .sw-with-hero .sw-pages { z-index: 1; }
+  .sw-with-hero .sw-page { padding-top: 14px; box-sizing: border-box; }
+  .sw-sub { font-family: var(--hs-sans); font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--hs-muted); margin-left: var(--hs-space-7); }
+  .sw-stats { display: flex; flex-wrap: wrap; gap: var(--hs-space-6); padding: 0 0 var(--hs-space-8); flex: none; }
+  .sw-pages { position: relative; margin-bottom: var(--hs-space-7); flex: 1; min-height: 0; width: calc(100% + var(--hs-space-22) + var(--hs-space-22) - 20px); margin-left: calc(10px - var(--hs-space-22)); }
+  .sw-page { position: absolute; top: 0; left: 0; right: 0; height: 100%; visibility: hidden; overflow-y: auto; }
+  .sw-page.on { visibility: visible; }
+  .sw-group {
+    border: 1px solid var(--hs-line);
+    border-radius: var(--hs-radius);
+    padding: var(--hs-space-8) var(--hs-space-10);
+    background: var(--hs-soft);
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  .sw-body { flex: 1; min-height: 0; overflow-y: auto; }
+  .sw-group--clarify { border-style: dashed; border-color: #C49A3C; background: color-mix(in srgb, #E8BF55 7%, var(--hs-bg)); }
+  .sw-group--clarify .sw-worker { color: #9B7625; }
+  .sw-badge--clarify { background: color-mix(in srgb, #E8BF55 22%, var(--hs-bg)); color: #8A6519; }
+  .hs-page .sw-dot--clarify { background: #C49A3C; color: #C49A3C; }
+  .sw-badge--bad { background: color-mix(in srgb, var(--danger, #b4453a) 12%, var(--hs-bg)); color: var(--danger, #b4453a); }
+  .sw-ghead { display: flex; align-items: center; justify-content: space-between; gap: var(--hs-space-7); flex-wrap: wrap; }
+  .sw-gid { display: flex; align-items: center; gap: var(--hs-space-7); }
+  .sw-worker { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--hs-accent); }
+  .sw-branch {
+    font-family: var(--hs-mono, ui-monospace, monospace); font-size: 11.5px;
+    color: var(--hs-sub); background: var(--hs-tint);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .sw-issue { padding: var(--hs-space-7) 0 0; }
+  .sw-issue + .sw-issue { border-top: 1px dashed var(--hs-line); margin-top: var(--hs-space-7); }
+  .sw-ititle { font-size: 14px; line-height: 1.55; margin: 0; }
+  .sw-ititle a { color: var(--hs-accent); text-decoration: none; font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12.5px; margin-right: 6px; }
+  .sw-ititle a:hover { text-decoration: underline; }
+  .sw-row { display: flex; gap: var(--hs-space-7); font-size: 13px; line-height: 1.65; margin-top: 4px; }
+  .sw-tag { flex: none; font-size: 11px; font-weight: 700; color: var(--hs-muted); padding-top: 2px; width: 2.6em; }
+  .sw-row p { margin: 0; flex: 1; min-width: 0; overflow-wrap: break-word; }
+  .sw-row--solution p { color: var(--hs-ink); }
+  .sw-row--problem p, .sw-row--missing p { color: var(--hs-sub); }
+  .sw-merge { font-size: 12px; color: var(--hs-muted); line-height: 1.6; margin-top: var(--hs-space-7); padding: var(--hs-space-6) var(--hs-space-8); background: var(--hs-tint); border-radius: var(--hs-radius); }
+  .sw-fail { font-size: 12.5px; color: var(--danger, #b4453a); line-height: 1.6; margin-top: var(--hs-space-7); }
+  .sw-gfoot { display: flex; align-items: center; gap: var(--hs-space-7); flex-wrap: wrap; margin-top: var(--hs-space-7); padding-top: var(--hs-space-6); border-top: 1px solid var(--hs-line); font-size: 12px; color: var(--hs-muted); }
+  .sw-note { margin-top: var(--hs-space-7); }
+  .sw-note .hs-textarea { font-size: 12.5px; min-height: 30px; }
+  .sw-foot { position: relative; display: flex; align-items: center; justify-content: flex-end; gap: var(--hs-space-8); padding-top: var(--hs-space-4); flex: none; }
+  .sw-pager { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: var(--hs-space-6); }
+  .sw-dots { display: flex; align-items: center; gap: var(--hs-space-6); }
+  .sw-arrow { padding: 2px 7px; line-height: 1; }
+  .sw-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: var(--hs-muted); color: var(--hs-muted); opacity: .45; }
+  .sw-dot--good { background: var(--green, #52765c); color: var(--green, #52765c); }
+  .sw-dot--bad { background: var(--danger, #b4453a); color: var(--danger, #b4453a); }
+  .sw-dot.on { opacity: 1; box-shadow: 0 0 0 1.5px var(--hs-bg), 0 0 0 3px currentColor; }
+  .sw-num { background: none; border: none; padding: 0; cursor: pointer; color: var(--hs-accent); font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12.5px; margin-right: 6px; }
+  .sw-num:hover { text-decoration: underline; }
+  .sw-detail { position: absolute; inset: 0; z-index: 10; background: var(--hs-bg); display: flex; flex-direction: column; padding: var(--hs-space-22); }
+  .sw-detail-head { display: flex; align-items: center; gap: var(--hs-space-7); flex: none; padding-bottom: var(--hs-space-8); }
+  .sw-detail-ctx { font-size: 12px; color: var(--hs-muted); font-family: var(--hs-mono, ui-monospace, monospace); }
+  .sw-detail-ext { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; line-height: 1; padding: 4px 9px; border-radius: 999px; background: var(--hs-tint); color: var(--hs-accent); text-decoration: none; }
+  .sw-detail-ext:hover { background: color-mix(in srgb, var(--hs-accent) 16%, var(--hs-bg)); }
+  .sw-detail-body { flex: 1; min-height: 0; overflow-y: auto; }
+  .sw-detail-title { font-family: var(--hs-serif); font-size: 19px; line-height: 1.45; font-weight: 600; margin: 0 0 var(--hs-space-4); }
+  .sw-sec { margin-top: var(--hs-space-8); }
+  .sw-sec-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--hs-muted); margin-bottom: var(--hs-space-6); }
+  .sw-sec p { font-size: 13.5px; line-height: 1.75; color: var(--hs-ink); margin: 0 0 var(--hs-space-6); overflow-wrap: break-word; }
+  .sw-status { font-size: 12px; color: var(--hs-muted); line-height: 1.5; padding-top: var(--hs-space-6); flex: none; min-height: 18px; }
+  .sw-brand { flex: none; text-align: center; font-size: 11px; letter-spacing: .06em; color: var(--hs-muted); padding-top: var(--hs-space-6); }
+  .sw-copybox { width: 100%; box-sizing: border-box; font-family: var(--hs-mono, ui-monospace, monospace); font-size: 12px; line-height: 1.6; min-height: 120px; }
+  .sw-hidden { display: none !important; }
+  .sw-empty { font-size: 13px; color: var(--hs-muted); padding: var(--hs-space-8) 0; }
+</style>
+</head>
+<body>
+<main class="hs-page">
+  <div class="hs-shell">
+
+    <div class="sw-top">
+      <header class="sw-head">
+        <h1 class="hs-title" id="swTitle" style="font-size:22px;"></h1>
+      </header>
+      <div class="sw-stats" id="swStats"></div>
+    </div>
+    <div class="sw-pages" id="swPages"></div>
+
+    <footer class="sw-foot" id="swFoot">
+      <span class="sw-pager" id="swPager">
+        <button type="button" class="hs-button hs-button--quiet sw-arrow" id="swPrev">‹</button>
+        <span class="sw-dots" id="swDots"></span>
+        <button type="button" class="hs-button hs-button--quiet sw-arrow" id="swNext">›</button>
+      </span>
+      <button type="button" class="hs-button hs-button--primary" id="swSubmitBtn"></button>
+    </footer>
+    <div class="sw-status" id="swStatus"></div>
+    <div class="sw-brand" id="swBrand"></div>
+
+    <div id="swCopyZone" class="sw-hidden" style="display:grid; gap: var(--hs-space-7); padding-top: var(--hs-space-8);">
+      <p class="sw-status" id="swCopyHint" style="padding-top:0;"></p>
+      <textarea class="hs-textarea sw-copybox" id="swCopyText" readonly></textarea>
+      <div><button type="button" class="hs-button" id="swCopyBtn"></button></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var STR = {
+    zh: {
+      eyebrow: "HANA CODER · 修复流水线汇报",
+      stats: function (i, g) { return i + " 个 issue · " + g + " 组"; },
+      stApproved: "✓ 通过",
+      stRounds: function (n) { return "✓ 打回 " + n + " 轮后通过"; },
+      stFailed: "✗ 未修复",
+      stClarify: "? 待澄清",
+      statApproved: function (n) { return "✓ " + n + " 通过"; },
+      statFailed: function (n) { return "✗ " + n + " 未修复"; },
+      statClarify: function (n) { return "? " + n + " 待澄清"; },
+      tagProblem: "问题",
+      tagSolution: "方案",
+      tagBody: "原文",
+      tagDetail: "处理方案",
+      tagMissing: "缺口",
+      files: function (n) { return "改动 " + n + " 个文件"; },
+      testsPassed: "测试通过",
+      testsFailed: "测试未过",
+      testsNone: "未跑测试",
+      clarifyWorker: "待澄清",
+      notePh: "批注这组…",
+      back: "‹ 返回",
+      submit: "提交批注",
+      resubmit: "更新批注",
+      submitted: function (time) { return "批注已提交 · " + time; },
+      copyHint: "这张卡片当前不在 Hana 宿主里，无法直接叫醒 Agent。把下面的批注复制回对话即可：",
+      copy: "复制批注",
+      copied: "已复制 ✓",
+      empty: "这一批没有需要展示的组。"
+    },
+    en: {
+      eyebrow: "HANA CODER · FIX REPORT",
+      stats: function (i, g) { return i + " issues · " + g + " groups"; },
+      stApproved: "✓ Approved",
+      stRounds: function (n) { return "✓ Approved after " + n + " round" + (n > 1 ? "s" : ""); },
+      stFailed: "✗ Unresolved",
+      stClarify: "? Needs info",
+      statApproved: function (n) { return "✓ " + n + " approved"; },
+      statFailed: function (n) { return "✗ " + n + " unresolved"; },
+      statClarify: function (n) { return "? " + n + " needs info"; },
+      tagProblem: "Issue",
+      tagSolution: "Fix",
+      tagBody: "Original report",
+      tagDetail: "Resolution",
+      tagMissing: "Gap",
+      files: function (n) { return n + " files changed"; },
+      testsPassed: "Tests passed",
+      testsFailed: "Tests failing",
+      testsNone: "No tests run",
+      clarifyWorker: "Needs info",
+      notePh: "Note this group…",
+      back: "‹ Back",
+      submit: "Submit notes",
+      resubmit: "Update notes",
+      submitted: function (time) { return "Notes submitted · " + time; },
+      copyHint: "This card is outside the Hana host and cannot wake the Agent. Copy the notes back into the chat:",
+      copy: "Copy notes",
+      copied: "Copied ✓",
+      empty: "Nothing to show for this batch."
+    }
+  };
+
+  /* ---------- state snapshot ---------- */
+  function readEmbedded() {
+    var el = document.querySelector("script[data-card-state]");
+    try { return JSON.parse(el.textContent); } catch (e) { return {}; }
+  }
+  var snap = readEmbedded();
+  var lang = (snap.uiLanguage === "en") ? "en" : "zh";
+  var T = STR[lang];
+  var groups = Array.isArray(snap.groups) ? snap.groups : [];
+  var notes = (snap.notes && typeof snap.notes === "object") ? snap.notes : {};
+  var notesSubmittedAt = snap.notesSubmittedAt || null;
+  var page = (typeof snap.page === "number" && snap.page >= 0) ? snap.page : 0;
+
+  /* ---------- host bridge ---------- */
+  var caps = { emit: false, state: false, track: false };
+  function boot() {
+    if (!window.card || typeof window.card.capabilities !== "function") { render(); return; }
+    window.card.capabilities().then(function (env) {
+      var c = (env && env.ok && env.result && env.result.capabilities) || {};
+      caps.emit = c.emit === "available";
+      caps.state = c.state === "available" || c.state === "local_fallback";
+      var tr = c.track;
+      caps.track = !!(tr && (tr.status === "available" || tr.status === "local_fallback"));
+      if (!caps.state) { render(); return; }
+      Promise.all([
+        window.card.state.get("notes"),
+        window.card.state.get("notesSubmittedAt"),
+        window.card.state.get("page")
+      ]).then(function (rs) {
+        if (rs[0] && rs[0].ok && rs[0].result && rs[0].result.value && typeof rs[0].result.value === "object") {
+          notes = rs[0].result.value;
+        }
+        if (rs[1] && rs[1].ok && rs[1].result && rs[1].result.value) { notesSubmittedAt = rs[1].result.value; }
+        if (rs[2] && rs[2].ok && rs[2].result && typeof rs[2].result.value === "number") { page = rs[2].result.value; }
+        render();
+      });
+    });
+  }
+  var lastSaveError = "";
+  async function persist() {
+    if (!caps.state) return true;
+    var rs = await Promise.all([
+      window.card.state.set("notes", notes),
+      window.card.state.set("notesSubmittedAt", notesSubmittedAt),
+      window.card.state.set("page", page)
+    ]);
+    var failed = rs.find(function (r) { return !r || !r.ok; });
+    lastSaveError = failed ? ((failed && failed.error) || "状态保存失败，刷新前请保留批注。") : "";
+    if (lastSaveError) document.getElementById("swStatus").textContent = lastSaveError;
+    return !failed;
+  }
+
+  /* ---------- helpers ---------- */
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+  function groupKey(g, i) { return (g.label || "Worker") + "#" + i; }
+  function fmtTime(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleString(lang === "zh" ? "zh-CN" : "en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return ""; }
+  }
+
+  function statusBadge(g) {
+    var b = el("span", "hs-badge");
+    if (g.status === "approved") { b.classList.add("hs-badge--good"); b.textContent = T.stApproved; }
+    else if (g.status === "rounds") { b.classList.add("hs-badge--good"); b.textContent = T.stRounds(g.rounds || 1); }
+    else if (g.status === "failed") { b.classList.add("sw-badge--bad"); b.textContent = T.stFailed; }
+    else { b.classList.add("sw-badge--clarify"); b.textContent = T.stClarify; }
+    return b;
+  }
+  function testsBadge(g) {
+    var b = el("span", "hs-badge");
+    if (g.tests === "passed") { b.classList.add("hs-badge--good"); b.textContent = T.testsPassed; }
+    else if (g.tests === "failed") { b.classList.add("hs-badge--warn"); b.textContent = T.testsFailed; }
+    else { b.classList.add("hs-badge--pending"); b.textContent = T.testsNone; }
+    return b;
+  }
+
+  /* ---------- paging ---------- */
+  var pageEls = [];
+  var dotEls = [];
+  function showPage(i) {
+    if (!pageEls.length) return;
+    page = Math.max(0, Math.min(i, pageEls.length - 1));
+    pageEls.forEach(function (p, k) { p.classList.toggle("on", k === page); });
+    dotEls.forEach(function (d, k) { d.classList.toggle("on", k === page); });
+    persist();
+  }
+
+  /* ---------- render ---------- */
+  function render() {
+    document.querySelector("main.hs-page").classList.toggle("sw-with-hero", snap.hero === true);
+    var titleEl = document.getElementById("swTitle");
+    titleEl.textContent = snap.title || T.eyebrow;
+    document.getElementById("swBrand").textContent = T.eyebrow;
+    var subParts = [];
+    if (snap.repo) subParts.push(snap.repo);
+    if (snap.rangeLabel) subParts.push(snap.rangeLabel);
+    if (subParts.length) titleEl.appendChild(el("span", "sw-sub", subParts.join(" · ")));
+
+    var issueCount = 0, approved = 0, failed = 0, clarify = 0;
+    groups.forEach(function (g) {
+      issueCount += Array.isArray(g.issues) ? g.issues.length : 0;
+      if (g.status === "approved" || g.status === "rounds") approved++;
+      else if (g.status === "failed") failed++;
+      else clarify++;
+    });
+    var stats = document.getElementById("swStats");
+    stats.innerHTML = "";
+    stats.appendChild(el("span", "hs-badge hs-badge--pending", T.stats(issueCount, groups.length)));
+    if (approved) stats.appendChild(el("span", "hs-badge hs-badge--good", T.statApproved(approved)));
+    if (failed) stats.appendChild(el("span", "hs-badge sw-badge--bad", T.statFailed(failed)));
+    if (clarify) stats.appendChild(el("span", "hs-badge sw-badge--clarify", T.statClarify(clarify)));
+
+    var wrap = document.getElementById("swPages");
+    wrap.innerHTML = "";
+    pageEls = [];
+    if (!groups.length) wrap.appendChild(el("p", "sw-empty", T.empty));
+
+    groups.forEach(function (g, gi) {
+      var isClarify = g.status === "clarify";
+      var isFailed = g.status === "failed";
+      var pg = el("div", "sw-page");
+      var card = el("section", "sw-group" + (isClarify ? " sw-group--clarify" : ""));
+
+      var head = el("div", "sw-ghead");
+      var gid = el("div", "sw-gid");
+      gid.appendChild(el("span", "sw-worker", g.label || (isClarify ? T.clarifyWorker : "Worker")));
+      if (!isClarify) gid.appendChild(statusBadge(g));
+      head.appendChild(gid);
+      if (g.branch) head.appendChild(el("code", "sw-branch", g.branch));
+      card.appendChild(head);
+
+      var body = el("div", "sw-body");
+      (Array.isArray(g.issues) ? g.issues : []).forEach(function (it) {
+        var block = el("div", "sw-issue");
+        var t = el("p", "sw-ititle");
+        var num = el("button", "sw-num", "#" + it.number);
+        num.type = "button";
+        num.addEventListener("click", function () { openDetail(g, it); });
+        t.appendChild(num);
+        t.appendChild(document.createTextNode(it.title || ""));
+        block.appendChild(t);
+
+        if (it.problem) {
+          var rp = el("div", "sw-row sw-row--problem");
+          rp.appendChild(el("span", "sw-tag", T.tagProblem));
+          rp.appendChild(el("p", null, it.problem));
+          block.appendChild(rp);
+        }
+        if (isClarify && it.missing) {
+          var rm = el("div", "sw-row sw-row--missing");
+          rm.appendChild(el("span", "sw-tag", T.tagMissing));
+          rm.appendChild(el("p", null, it.missing));
+          block.appendChild(rm);
+        } else if (it.solution) {
+          var rs = el("div", "sw-row sw-row--solution");
+          rs.appendChild(el("span", "sw-tag", T.tagSolution));
+          rs.appendChild(el("p", null, it.solution));
+          block.appendChild(rs);
+        }
+        body.appendChild(block);
+      });
+
+      if (g.mergeReason) body.appendChild(el("div", "sw-merge", g.mergeReason));
+      if (isFailed && g.failReason) body.appendChild(el("div", "sw-fail", g.failReason));
+      card.appendChild(body);
+
+      if (!isClarify) {
+        var foot = el("div", "sw-gfoot");
+        foot.appendChild(el("span", null, T.files(g.filesChanged || 0)));
+        foot.appendChild(testsBadge(g));
+        if (g.testsNote) foot.appendChild(el("span", null, g.testsNote));
+        card.appendChild(foot);
+      }
+
+      /* per-group annotation */
+      var noteWrap = el("div", "sw-note");
+      var ta = el("textarea", "hs-textarea");
+      ta.rows = 1;
+      ta.placeholder = T.notePh;
+      ta.value = notes[groupKey(g, gi)] || "";
+      ta.dataset.gkey = groupKey(g, gi);
+      ta.addEventListener("change", function () {
+        var v = ta.value.trim();
+        if (v) notes[ta.dataset.gkey] = v;
+        else delete notes[ta.dataset.gkey];
+        persist();
+      });
+      noteWrap.appendChild(ta);
+      card.appendChild(noteWrap);
+
+      pg.appendChild(card);
+      wrap.appendChild(pg);
+      pageEls.push(pg);
+    });
+
+    /* status-colored dots */
+    var dots = document.getElementById("swDots");
+    dots.innerHTML = "";
+    dotEls = [];
+    groups.forEach(function (g, gi) {
+      var d = el("button", "sw-dot");
+      d.type = "button";
+      if (g.status === "failed") d.classList.add("sw-dot--bad");
+      else if (g.status !== "clarify") d.classList.add("sw-dot--good");
+      else d.classList.add("sw-dot--clarify");
+      d.title = g.label || ("Worker " + gi);
+      d.addEventListener("click", function () { showPage(gi); });
+      dots.appendChild(d);
+      dotEls.push(d);
+    });
+    dots.style.visibility = pageEls.length > 1 ? "visible" : "hidden";
+    document.getElementById("swPrev").style.visibility = dots.style.visibility;
+    document.getElementById("swNext").style.visibility = dots.style.visibility;
+
+    showPage(page);
+
+    document.getElementById("swSubmitBtn").textContent = notesSubmittedAt ? T.resubmit : T.submit;
+    document.getElementById("swStatus").textContent = lastSaveError || (notesSubmittedAt ? T.submitted(fmtTime(notesSubmittedAt)) : "");
+  }
+
+  /* ---------- detail overlay ---------- */
+  var detailEl = null;
+  function detailRow(tag, text) {
+    var r = el("div", "sw-row");
+    r.appendChild(el("span", "sw-tag", tag));
+    r.appendChild(el("p", null, text));
+    return r;
+  }
+  function openDetail(g, it) {
+    closeDetail();
+    var d = el("div", "sw-detail");
+    var head = el("div", "sw-detail-head");
+    var back = el("button", "hs-button hs-button--quiet", T.back);
+    back.type = "button";
+    back.addEventListener("click", closeDetail);
+    head.appendChild(back);
+    head.appendChild(el("span", "sw-detail-ctx", (g.label || "") + " · #" + it.number));
+    if (it.url && /^https?:\/\//i.test(it.url)) {
+      var ext = el("a", "sw-detail-ext", "GitHub ↗");
+      ext.href = it.url;
+      ext.target = "_blank";
+      ext.rel = "noopener";
+      head.appendChild(ext);
+    }
+    d.appendChild(head);
+    var body = el("div", "sw-detail-body");
+    body.appendChild(el("h2", "sw-detail-title", it.title || ""));
+    if (it.body) secParas(body, it.body, T.tagBody);
+    else if (it.problem) body.appendChild(detailRow(T.tagProblem, it.problem));
+    if (g.status === "clarify" && it.missing) {
+      body.appendChild(detailRow(T.tagMissing, it.missing));
+    } else if (it.detail) {
+      secParas(body, it.detail, T.tagDetail);
+    } else if (it.solution) {
+      body.appendChild(detailRow(T.tagSolution, it.solution));
+    }
+    d.appendChild(body);
+    document.querySelector("main.hs-page").appendChild(d);
+    detailEl = d;
+  }
+  function secParas(container, text, label) {
+    var sec = el("div", "sw-sec");
+    sec.appendChild(el("div", "sw-sec-label", label));
+    String(text).split(/\n\s*\n/).forEach(function (p) {
+      var t = p.trim();
+      if (t) sec.appendChild(el("p", null, t));
+    });
+    container.appendChild(sec);
+  }
+  function closeDetail() {
+    if (detailEl && detailEl.parentNode) detailEl.parentNode.removeChild(detailEl);
+    detailEl = null;
+  }
+
+  document.getElementById("swPrev").addEventListener("click", function () { showPage(page - 1); });
+  document.getElementById("swNext").addEventListener("click", function () { showPage(page + 1); });
+  document.addEventListener("keydown", function (e) {
+    if (detailEl) { if (e.key === "Escape") closeDetail(); return; }
+    var t = e.target;
+    if (t && (t.tagName === "TEXTAREA" || t.tagName === "INPUT")) return;
+    if (e.key === "ArrowLeft") showPage(page - 1);
+    else if (e.key === "ArrowRight") showPage(page + 1);
+  });
+
+  /* ---------- submit ---------- */
+  function payload() {
+    var out = {
+      title: snap.title || "",
+      repo: snap.repo || "",
+      rangeLabel: snap.rangeLabel || "",
+      submittedAt: notesSubmittedAt,
+      notes: []
+    };
+    groups.forEach(function (g, gi) {
+      var v = notes[groupKey(g, gi)];
+      if (v) out.notes.push({ group: g.label || ("Worker " + gi), note: v });
+    });
+    return out;
+  }
+  function plainText() {
+    var p = payload();
+    var lines = ["[" + (p.title || T.eyebrow) + "]"];
+    p.notes.forEach(function (n) { lines.push("· " + n.group + " → " + n.note); });
+    if (!p.notes.length) lines.push(lang === "zh" ? "（无批注）" : "(no notes)");
+    return lines.join("\n");
+  }
+  var submitting = false;
+  async function submit() {
+    if (submitting) return;
+    if (!caps.emit) { showCopy(); return; }
+    var out = payload();
+    var nextTime = new Date().toISOString();
+    out.submittedAt = nextTime;
+    out.instruction = "读取本事件来源卡片的真实分组、修复结果和逐组批注。先判断疑问、重查、返工或明确后续动作；仅处理点名范围。返工续接原工作树和执行实例，修后核实diff与测试再汇报。纯疑问先回答。本次提交不自动授权push、发布PR/review、merge、关闭Issue或删除工作树。示例卡不执行任务。遵守hana-coder的issues规程。";
+    if (new TextEncoder().encode(JSON.stringify(out)).length > 8192) {
+      document.getElementById("swStatus").textContent = "批注过长，请缩短后提交；内容已保留。";
+      return;
+    }
+    submitting = true;
+    document.getElementById("swSubmitBtn").disabled = true;
+    try {
+      var env = await window.card.emit("issue-swarm-notes", out);
+      if (!env || !env.ok) {
+        document.getElementById("swStatus").textContent = (env && env.error) || "提交失败，批注已保留，可重试。";
+        return;
+      }
+      notesSubmittedAt = nextTime;
+      await persist();
+      render();
+      if (caps.track) await window.card.track("issue-swarm-notes", { groups: groups.length, noted: out.notes.length });
+    } finally {
+      submitting = false;
+      document.getElementById("swSubmitBtn").disabled = false;
+    }
+  }
+  function showCopy() {
+    document.getElementById("swFoot").classList.add("sw-hidden");
+    document.getElementById("swCopyHint").textContent = T.copyHint;
+    document.getElementById("swCopyText").value = plainText();
+    document.getElementById("swCopyBtn").textContent = T.copy;
+    document.getElementById("swCopyZone").classList.remove("sw-hidden");
+  }
+  document.getElementById("swSubmitBtn").addEventListener("click", submit);
+  document.getElementById("swCopyBtn").addEventListener("click", function () {
+    var ta = document.getElementById("swCopyText");
+    var done = function () { document.getElementById("swCopyBtn").textContent = T.copied; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(done, function () { ta.select(); });
+    } else { ta.select(); }
+  });
+
+  /* ---------- frame fit: 4:3 in chat, fill when popped out ---------- */
+  function fitFrame() {
+    var w = document.documentElement.clientWidth || 0;
+    var h = window.innerHeight || 0;
+    var want = Math.max(400, Math.round(w * 0.75));
+    var fill = h > want + 40;
+    document.documentElement.classList.toggle("sw-fill", fill);
+  }
+  window.addEventListener("resize", fitFrame);
+
+  boot();
+})();
+</script>
+</body>
+</html>
