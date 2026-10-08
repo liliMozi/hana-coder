@@ -14,6 +14,22 @@
 
 主代理先亲读关键代码、理解上下游和归属，收敛关键设计。任务书写清目标、非目标、基准提交、文件/符号、契约、修改步骤、错误处理、验证命令和停止条件；不把核心设计调查交给执行者。
 
+### 卡片文字
+
+两张 Issue 卡的读者默认没有上下文：没看过 Issue 原文、讨论和代码。每一组、每一项都要单独读得懂，不依赖前后页或聊天记录。
+
+- 组：modules 写用户能认出的功能区，不只写目录名或模块代号。mergeReason 说明这几项为什么放在一起，例如"同一根因：…"；一项一组时留空。待澄清组的 missing 写缺什么、找谁补、补齐后做什么。
+- 项：context 交代前因后果，规则见下一节。problem、acceptance、detail、solution 也不能只有代号或半句话。
+
+表达借鉴 ASD-STE100，约八成严格度，用卡片语言自然表达：
+
+- 先写结论或现状，再写依据。
+- 一句只说一件事。中文句子一般不超过 40 字。
+- 主语明确，多用主动句："点击导出后，表格列错位"，不写"出现错位情况"。
+- 同一事物全卡用同一个词，不换同义词。
+- 写具体条件和数字，不写"有时""某些情况""可能有问题"。
+- 事实、推测和待确认分开写，推测标"推测"。
+
 ## 3. 分组确认卡
 
 模板：`hana-coder/assets/issue-gate.card.html`。
@@ -21,8 +37,18 @@
 完整 state：
 - uiLanguage、title、repo（host/owner/repo）、rangeLabel、hero:true。
 - groups：label、modules、issues、mergeReason；待澄清组额外 status:clarify。
-- 每个 issue：number、title、实际url、problem、acceptance、body、detail；待澄清项用 missing。
+- 每个 issue：number、title、实际url、problem、context、acceptance、body、detail；待澄清项用 missing。
 - notes:{}、submittedAt:null、page:0。
+
+context 写前因后果，读者是没看过 Issue 和代码的用户。详情页最先显示它，必须单独读得懂。按顺序写清：
+
+1. 涉及哪个功能，用户当时在做什么。
+2. 触发条件和复现方式。
+3. 实际后果和影响范围：影响谁、多常见、有无数据丢失或阻断。
+4. 为什么会这样：已证实的写依据；没证实的标"推测"，不写成结论。
+5. Issue 讨论里已有的结论、分歧或维护者表态；没有就不写。
+
+不用内部代号或只有开发者懂的缩写；必要术语顺带解释一句。一般 3～6 句，复杂项可分 2～3 段，不复述原文。信息不足时写明缺什么，不靠猜补全。
 
 字段写法：problem是具体症状，不先编根因；acceptance来自用户目标和既有契约，不凭偏好加门槛；detail区分已证实根因和待验证假设。body保留有用原文和复现，不复制无关讨论。
 
@@ -48,7 +74,8 @@
 
 每组：label、branch、status（approved / rounds / failed / clarify）、rounds、issues、mergeReason、filesChanged、tests（passed / failed / none）、testsNote、failReason。
 
-- 每个 issue：number、title、真实url、problem、solution、body、detail；待澄清项为 missing。
+- 每个 issue：number、title、真实url、problem、context、solution、body、detail；待澄清项为 missing。
+- context 沿用分组确认卡的写法，补上修复中查实的新事实；根因与处理写在 solution 和 detail，不在 context 重复。
 - solution用“根因：…处理：…”，只写已验证的实际修复。
 - testsNote写实际命令及结果；none不写“通过”。
 - failReason写卡点及建议，不写含糊的“遇到问题”。

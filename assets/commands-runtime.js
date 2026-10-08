@@ -1,5 +1,8 @@
 (function () {
   'use strict';
+/* Frame fit: fixed height in chat, fill the window when popped out (same rule as the Issue cards). */
+function fitFrame(){document.documentElement.classList.toggle('hc-fill',(window.innerHeight||0)>570+40)}
+window.addEventListener('resize',fitFrame);fitFrame();
   const initial = JSON.parse(document.querySelector('[data-card-state]').textContent);
   const manifest = JSON.parse(document.querySelector('[data-card-manifest]').textContent);
   let panel = initial.panel, caps = {}, ready = false, saving = Promise.resolve();

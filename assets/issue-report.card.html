@@ -44,6 +44,7 @@
           "number": 312,
           "title": "暗色模式下列表分隔线几乎看不见",
           "url": "https://github.com/example/fieldnotes/issues/312",
+          "context": "列表页用细分隔线区分相邻条目。用户切到暗色主题浏览长列表时，分隔线和背景几乎同色，相邻条目会连成一片，容易点错或看串行。只影响暗色主题，亮色主题正常；报告者在 v1.4.2 上稳定复现。\n\nIssue 讨论里没有其他用户反馈相反情况。根因和处理见下方处理方案。",
           "problem": "暗色主题中，分隔线的对比度不足。列表条目难以区分。",
           "solution": "根因：暗色主题沿用亮色主题的透明度值。处理：调整暗色主题的分隔线变量，增加样式回归测试。",
           "body": "暗色主题下，列表分隔线几乎看不见。\n\n环境：macOS 26，v1.4.2。亮色主题正常。\n\n期望：暗色下分隔线清晰。",
@@ -267,6 +268,7 @@
       statClarify: function (n) { return "? " + n + " 待澄清"; },
       tagProblem: "问题",
       tagSolution: "方案",
+      tagContext: "前因后果",
       tagBody: "原文",
       tagDetail: "处理方案",
       tagMissing: "缺口",
@@ -297,6 +299,7 @@
       statClarify: function (n) { return "? " + n + " needs info"; },
       tagProblem: "Issue",
       tagSolution: "Fix",
+      tagContext: "Background",
       tagBody: "Original report",
       tagDetail: "Resolution",
       tagMissing: "Gap",
@@ -571,6 +574,7 @@
     d.appendChild(head);
     var body = el("div", "sw-detail-body");
     body.appendChild(el("h2", "sw-detail-title", it.title || ""));
+    if (it.context) secParas(body, it.context, T.tagContext);
     if (it.body) secParas(body, it.body, T.tagBody);
     else if (it.problem) body.appendChild(detailRow(T.tagProblem, it.problem));
     if (g.status === "clarify" && it.missing) {
@@ -686,6 +690,7 @@
   window.addEventListener("resize", fitFrame);
 
   boot();
+  fitFrame();
 })();
 </script>
 </body>

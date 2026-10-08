@@ -1,5 +1,8 @@
 (function(){
 'use strict';
+/* Frame fit: fixed height in chat, fill the window when popped out (same rule as the Issue cards). */
+function fitFrame(){document.documentElement.classList.toggle('hc-fill',(window.innerHeight||0)>570+40)}
+window.addEventListener('resize',fitFrame);fitFrame();
 const initial=JSON.parse(document.querySelector('[data-card-state]').textContent);
 const manifest=JSON.parse(document.querySelector('[data-card-manifest]').textContent);
 const sample={repoPath:'',repoLabel:'示例仓库 · 示例数据',remote:'',host:'github.com',at:'',limit:30,capped:false,prs:[{number:42,title:'示例：改善列表可读性',branch:'example/readability',base:'main',author:'示例贡献者',status:'待审阅',tone:'pending',checks:'未知',review:'尚未审阅',merge:'尚未核验',files:0,additions:0,deletions:0,body:'这是匿名示例数据，不对应真实仓库或任务。',url:'',headSha:'example-head-sha',baseSha:'example-base-sha',checkLinks:[]}],summaries:{},reviews:{},phase:'idle',refreshId:null,reviewRequest:null,message:'示例数据；准备卡片后可读取已绑定仓库。',notes:{},page:0};
